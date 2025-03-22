@@ -49,6 +49,9 @@ class Home extends StatelessWidget {
             const Text(
               'Hi guys, kumusta namo Jeff and Krystelle? deployed na atong app! Web app lang sa atong himoon',
             ),
+            const Text(
+              'Small pipeline test',
+            ),
           ],
         ),
       ),
