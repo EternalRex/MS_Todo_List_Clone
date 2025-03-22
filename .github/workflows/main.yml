@@ -38,7 +38,7 @@ jobs:
       - name: Build Flutter Web
         run: |
           cd src
-          flutter/bin/flutter build web --release
+          flutter build web --release --base-href "/"
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
