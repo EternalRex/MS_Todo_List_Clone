@@ -22,6 +22,14 @@ jobs:
           flutter-version: 3.24.5 # Change to match your Flutter version
           cache: true
 
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            flutter-${{ runner.os }}-
+
       - name: Change to Flutter Project Directory
         run: cd src # Move into the Flutter project directory
 
