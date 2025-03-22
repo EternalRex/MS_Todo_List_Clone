@@ -1,0 +1,6 @@
+name: Deploy Flutter Web  App to Vercel
+
+on: 
+  push:
+    branches:
+      - main
