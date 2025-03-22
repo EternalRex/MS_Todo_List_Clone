@@ -3,7 +3,7 @@ name: Deploy Flutter Web to Vercel
 on:
   push:
     branches:
-      - main # Change this if you use a different branch
+      - main # Change this if needed
 
 jobs:
   build_and_deploy:
@@ -13,23 +13,37 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Verify Repository Structure
+        run: ls -la # Debugging step to check file locations
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.24.5 # Change this to your Flutter version
+          flutter-version: 3.24.5 # Change to match your Flutter version
           cache: true
 
+      - name: Change to Flutter Project Directory
+        run: cd src # Move into the Flutter project directory
+
       - name: Install Dependencies
-        run: flutter pub get
+        run: |
+          cd src  # Move into the correct directory
+          flutter pub get
 
       - name: Run Tests
-        run: flutter test
+        run: |
+          cd src
+          flutter test
 
       - name: Build Flutter Web
-        run: flutter build web --release --base-href "/"
+        run: |
+          cd src
+          flutter/bin/flutter build web --release
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel
-        run: vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm --cwd build/web
+        run: |
+          cd src/build/web
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm
