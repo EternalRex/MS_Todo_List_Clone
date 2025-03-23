@@ -1,6 +1,39 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  bool isProduction = const bool.fromEnvironment('DART_DEFINE', defaultValue: false);
+
+  if (!isProduction) {
+    await dotenv.load(fileName: ".env");
+  }
+
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: isProduction
+          ? const String.fromEnvironment('FIREBASE_API_KEY')
+          : dotenv.env['FIREBASE_API_KEY']!,
+      appId: isProduction
+          ? const String.fromEnvironment('FIREBASE_APP_ID')
+          : dotenv.env['FIREBASE_APP_ID']!,
+      authDomain: isProduction
+          ? const String.fromEnvironment('FIREBASE_AUTH_DOMAIN')
+          : dotenv.env['FIREBASE_AUTH_DOMAIN'],
+      projectId: isProduction
+          ? const String.fromEnvironment('FIREBASE_PROJECT_ID')
+          : dotenv.env['FIREBASE_PROJECT_ID']!,
+      storageBucket: isProduction
+          ? const String.fromEnvironment('FIREBASE_STORAGE_BUCKET')
+          : dotenv.env['FIREBASE_STORAGE_BUCKET'],
+      messagingSenderId: isProduction
+          ? const String.fromEnvironment('')
+          : dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+    ),
+  );
+
   runApp(const TodoListApp());
 }
 
