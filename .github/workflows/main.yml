@@ -50,7 +50,7 @@ jobs:
       - name: Build Flutter Web
         run: |
           cd src
-          flutter build web --release --base-href "/"
+          flutter build web --release --base-href "/" \
             --dart-define=FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} \
             --dart-define=FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }} \
             --dart-define=FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} \
