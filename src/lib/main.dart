@@ -18,6 +18,7 @@ void main() async {
       ),
     );
   } else {
+    await dotenv.load(fileName: ".env");
     await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: dotenv.env['FIREBASE_API_KEY']!,
