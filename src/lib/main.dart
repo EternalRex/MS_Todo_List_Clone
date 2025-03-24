@@ -1,35 +1,35 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  if (kReleaseMode) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
-        appId: String.fromEnvironment('FIREBASE_APP_ID'),
-        authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
-        projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
-        storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
-        messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
-      ),
-    );
-  } else {
-    await dotenv.load(fileName: ".env");
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: dotenv.env['FIREBASE_API_KEY']!,
-        appId: dotenv.env['FIREBASE_APP_ID']!,
-        authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
-        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'],
-        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-      ),
-    );
-  }
+  // if (kReleaseMode) {
+  //   await Firebase.initializeApp(
+  //     options: const FirebaseOptions(
+  //       apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
+  //       appId: String.fromEnvironment('FIREBASE_APP_ID'),
+  //       authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
+  //       projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+  //       storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+  //       messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+  //     ),
+  //   );
+  // } else {
+  //   await dotenv.load(fileName: ".env");
+  //   await Firebase.initializeApp(
+  //     options: FirebaseOptions(
+  //       apiKey: dotenv.env['FIREBASE_API_KEY']!,
+  //       appId: dotenv.env['FIREBASE_APP_ID']!,
+  //       authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
+  //       projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+  //       storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'],
+  //       messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+  //     ),
+  //   );
+  // }
   runApp(const TodoListApp());
 }
 
