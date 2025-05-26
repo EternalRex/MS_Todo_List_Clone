@@ -82,6 +82,12 @@ jobs:
           channel: "stable"
           cache: true
 
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Login to Firebase (CI)
+        run: firebase login:ci --token ${{ secrets.FIREBASE_TOKEN }}
+
       - name: Add Dart Pub Cache to PATH
         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
