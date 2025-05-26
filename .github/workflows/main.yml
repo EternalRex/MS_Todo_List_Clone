@@ -1,9 +1,71 @@
+# name: Deploy Flutter Web to Vercel
+
+# on:
+#   push:
+#     branches:
+#       - main # Change this if needed
+
+# jobs:
+#   build_and_deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Verify Repository Structure
+#         run: ls -la # Debugging step to check file locations
+
+#       - name: Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: 3.24.5 # Change to match your Flutter version
+#           cache: true
+
+#       - name: Cache Flutter Dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.pub-cache
+#           key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.yaml') }}
+#           restore-keys: |
+#             flutter-${{ runner.os }}-
+
+#       - name: Change to Flutter Project Directory
+#         run: cd src # Move into the Flutter project directory
+
+#       - name: Install Dependencies
+#         run: |
+#           cd src  # Move into the correct directory
+#           flutter pub get
+
+#       - name: Remove .env from pubspec.yaml
+#         run: |
+#           sed -i '/- .env/d' src/pubspec.yaml
+
+#       # - name: Run Tests
+#       #   run: |
+#       #     cd src
+#       #     flutter test
+
+#       - name: Build Flutter Web
+#         run: |
+#           cd src
+#           flutter build web --release --base-href "/"
+
+#       - name: Install Vercel CLI
+#         run: npm install -g vercel@latest
+
+#       - name: Deploy to Vercel
+#         run: |
+#           cd src/build/web
+#           vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm --name kem-jeff-krystelle-first-app
+
 name: Deploy Flutter Web to Vercel
 
 on:
   push:
     branches:
-      - main # Change this if needed
+      - main
 
 jobs:
   build_and_deploy:
@@ -13,49 +75,41 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Verify Repository Structure
-        run: ls -la # Debugging step to check file locations
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.24.5 # Change to match your Flutter version
+          flutter-version: "3.24.5" # Match your Flutter version
+          channel: "stable"
           cache: true
 
       - name: Cache Flutter Dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.pub-cache
-          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.yaml') }}
+          path: |
+            ~/.pub-cache
+            src/.dart_tool
+          key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: |
             flutter-${{ runner.os }}-
 
-      - name: Change to Flutter Project Directory
-        run: cd src # Move into the Flutter project directory
-
       - name: Install Dependencies
+        working-directory: ./src # Cleaner than manual cd
+        run: flutter pub get
+
+      - name: Generate Firebase Config
+        working-directory: ./src
         run: |
-          cd src  # Move into the correct directory
-          flutter pub get
+          # Only needed if you use environment variables in flutterfire CLI
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          flutter pub global run flutterfire_cli:flutterfire configure -y
 
-      - name: Remove .env from pubspec.yaml
-        run: |
-          sed -i '/- .env/d' src/pubspec.yaml
-
-      # - name: Run Tests
-      #   run: |
-      #     cd src
-      #     flutter test
-
-      - name: Build Flutter Web
-        run: |
-          cd src
-          flutter build web --release --base-href "/"
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+      - name: Build Flutter Web (Production)
+        working-directory: ./src
+        run: flutter build web --release --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/
 
       - name: Deploy to Vercel
+        working-directory: ./src/build/web
         run: |
-          cd src/build/web
-          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm --name kem-jeff-krystelle-first-app
+          vercel --token ${{ secrets.VERCEL_TOKEN }} \
+                --prod \
+                --confirm
