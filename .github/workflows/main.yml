@@ -3,7 +3,7 @@ name: Deploy Flutter Web to Vercel
 on:
   push:
     branches:
-      - main # Change this if needed
+      - staging # Change this if needed
 
 jobs:
   build_and_deploy:
