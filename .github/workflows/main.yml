@@ -3,7 +3,7 @@ name: Deploy Flutter Web to Vercel
 on:
   push:
     branches:
-      - main # Change this if needed
+      - staging # Change this if needed
 
 jobs:
   build_and_deploy:
@@ -38,15 +38,6 @@ jobs:
           cd src  # Move into the correct directory
           flutter pub get
 
-      # - name: Remove .env from pubspec.yaml
-      #   run: |
-      #     sed -i '/- .env/d' src/pubspec.yaml
-
-      # - name: Run Tests
-      #   run: |
-      #     cd src
-      #     flutter test
-
       - name: Build Flutter Web
         run: |
           cd src
@@ -59,68 +50,3 @@ jobs:
         run: |
           cd src/build/web
           vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm --name kem-jeff-krystelle-first-app
-
-# name: Deploy Flutter Web to Vercel
-
-# on:
-#   push:
-#     branches: [main]
-
-# jobs:
-#   deploy:
-#     name: Build & Deploy Flutter Web to Vercel
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-
-#       - name: Setup Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: "3.24.5"
-#           channel: stable
-#           cache: true
-
-#       - name: Add Dart Pub Cache to PATH
-#         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-
-#       - name: Install FlutterFire CLI
-#         run: dart pub global activate flutterfire_cli
-
-#       - name: Cache Flutter & Dart Dependencies
-#         uses: actions/cache@v3
-#         with:
-#           path: |
-#             ~/.pub-cache
-#             src/.dart_tool
-#           key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
-
-#       - name: Install Flutter Dependencies
-#         working-directory: ./src
-#         run: flutter pub get
-
-#       - name: Configure Firebase
-#         working-directory: ./src
-#         env:
-#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-#         run: flutterfire configure --yes --project=todo-list-app-61523
-
-#       - name: Build Flutter Web (Production)
-#         working-directory: ./src
-#         run: |
-#           flutter build web \
-#             --release \
-#             --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/ \
-#             --pwa-strategy=none
-
-#       - name: Install Vercel CLI
-#         run: npm install -g vercel@latest
-
-#       - name: Deploy to Vercel
-#         working-directory: ./src/build/web
-#         run: |
-#           vercel --prod --confirm \
-#             --token ${{ secrets.VERCEL_TOKEN }} \
-#             --name kem-jeff-krystelle-first-app
-

@@ -15,6 +15,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text("New update!"),
             const TextField(),
             const TextField(),
             Padding(
