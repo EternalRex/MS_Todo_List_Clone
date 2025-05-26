@@ -38,9 +38,9 @@ jobs:
           cd src  # Move into the correct directory
           flutter pub get
 
-      - name: Remove .env from pubspec.yaml
-        run: |
-          sed -i '/- .env/d' src/pubspec.yaml
+      # - name: Remove .env from pubspec.yaml
+      #   run: |
+      #     sed -i '/- .env/d' src/pubspec.yaml
 
       # - name: Run Tests
       #   run: |
