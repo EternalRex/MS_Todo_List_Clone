@@ -78,9 +78,15 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.5" # Match your Flutter version
+          flutter-version: "3.24.5"
           channel: "stable"
           cache: true
+
+      - name: Add Dart Pub Cache to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Install FlutterFire CLI
+        run: dart pub global activate flutterfire_cli
 
       - name: Cache Flutter Dependencies
         uses: actions/cache@v3
@@ -93,23 +99,24 @@ jobs:
             flutter-${{ runner.os }}-
 
       - name: Install Dependencies
-        working-directory: ./src # Cleaner than manual cd
+        working-directory: ./src
         run: flutter pub get
 
       - name: Generate Firebase Config
         working-directory: ./src
         run: |
-          # Only needed if you use environment variables in flutterfire CLI
-          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
-          flutter pub global run flutterfire_cli:flutterfire configure -y
+          flutterfire configure --yes --project=todo-list-app-61523
 
       - name: Build Flutter Web (Production)
         working-directory: ./src
         run: flutter build web --release --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/
 
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
       - name: Deploy to Vercel
         working-directory: ./src/build/web
         run: |
           vercel --token ${{ secrets.VERCEL_TOKEN }} \
-                --prod \
-                --confirm
+                 --prod \
+                 --confirm
